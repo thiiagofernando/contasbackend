@@ -1,4 +1,4 @@
-# API De Cadastro de Contas
+# API de Cadastro de Contas
 
 #
 API de Cadastro de Contas a Pagar utilizando JWT para Autenticação e com as funções de
