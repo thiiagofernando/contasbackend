@@ -6,5 +6,6 @@ namespace CadastroConta.Business.Interfaces
     {
         Usuario ObterUsuarioPorLoginESenha(string username, string senha);
         Usuario GravarNovoUsuario(Usuario usuario);
+        Usuario ObterUsuarioPorLogin(string login);
     }
 }

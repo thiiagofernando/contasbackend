@@ -11,6 +11,7 @@ namespace CadastroConta.Data.Mappings
             builder.HasKey(p => p.Id);
 
             builder.Property(p => p.Nome).IsRequired();
+            builder.Property(p => p.PagamentoRealizado).IsRequired();
 
             builder.Property(p => p.DiasEmAtraso).IsRequired();
 

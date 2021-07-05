@@ -39,6 +39,7 @@ namespace CadastroConta.Api.Controllers
                 return Ok(new
                 {
                     user = user.Login,
+                    nameUser = user.NomeCompleto,
                     authenticated = true,
                     created = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                     expiration = DateTime.Now.AddHours(1).ToString("yyyy-MM-dd HH:mm:ss"),
@@ -63,6 +64,10 @@ namespace CadastroConta.Api.Controllers
             }
             try
             {
+                var existeLogin = _repository.ObterUsuarioPorLogin(usuario.Login);
+                if(existeLogin != null)
+                    return BadRequest(new { message = "Não foi possível criar o usuário informe um login diferente" });
+
                 var novaoUsuario = new Usuario
                 {
                     Login = usuario.Login,

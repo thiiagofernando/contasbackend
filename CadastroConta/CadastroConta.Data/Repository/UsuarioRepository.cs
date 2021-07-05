@@ -18,6 +18,11 @@ namespace CadastroConta.Data.Repository
             return user;
         }
 
+        public Usuario ObterUsuarioPorLogin(string login)
+        {
+            return Db.usuario.AsNoTracking().FirstOrDefault(p => p.Login == login);
+        }
+
         public Usuario ObterUsuarioPorLoginESenha(string username, string senha)
         {
             return Db.usuario

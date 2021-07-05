@@ -10,5 +10,6 @@ namespace CadastroConta.Business.Models
         public decimal ValorCorrigido { get; set; }
         public DateTime DataVencimento { get; set; }
         public DateTime DataPagamento { get; set; }
+        public bool PagamentoRealizado { get; set; }
     }
 }

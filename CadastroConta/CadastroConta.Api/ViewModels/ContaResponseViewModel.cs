@@ -7,5 +7,6 @@
         public string ValorCorrigido { get; set; }
         public int DiasEmAtraso { get; set; }
         public string DataPagamento { get; set; }
+        public string PagamentoRealizado { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using CadastroConta.Business.Models;
 using CadastroConta.Data.Context;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -23,6 +24,22 @@ namespace CadastroConta.Data.Repository
             await SaveChanges();
         }
 
+        public virtual async Task Atualizar(TEntity entity)
+        {
+            Db.Entry(entity).State = EntityState.Modified;
+            await SaveChanges();
+        }
+
+        public virtual async Task Excluir(Guid id)
+        {
+            var entity = DbSet.Find(id);
+            DbSet.Remove(entity);
+            await SaveChanges();
+        }
+        public async Task<TEntity> ObterPorId(Guid id)
+        {
+           return await DbSet.FindAsync(id);
+        }
         public virtual async Task<List<TEntity>> ObterTodos()
         {
             return await DbSet.ToListAsync();

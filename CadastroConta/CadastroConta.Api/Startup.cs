@@ -44,7 +44,7 @@ namespace CadastroConta.Api
              );
             services.AddDbContext<ContasDbContext>(options =>
             {
-                options.UseInMemoryDatabase(databaseName: "InMemoryContasContext");
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
             //-> Documentação da API
             services.AddSwaggerGen(c =>
