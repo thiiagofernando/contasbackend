@@ -27,3 +27,6 @@ API de Cadastro de Contas a Pagar utilizando JWT para Autenticação e com as fu
   - Execute um Clean e um Rebuild no Projeto para baixar o pacotes
   - Não é necessario gerar um novo migrations para cria o banco e as tabelas
   - No Statup.cs possui um InitializeDatabase que ao executar o projeto irá criar o banco e as tabelas se a ConnectionStrings estiver correta
+  
+  
+**[Projeto de frontend](https://github.com/thiiagofernando/contasfrontend)**.<br>
