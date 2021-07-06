@@ -18,9 +18,13 @@ namespace CadastroConta.Data.Repository
         private const decimal taxaJurosMoraPorDiaAtrasoSuperior5Dias = 0.0003M;
         public ContaRepository(ContasDbContext context) : base(context) { }
 
-        public int CalcularDiasEmAtraso(DateTime dataVencimento, DateTime dataPagamento)
+        public int CalcularDiasEmAtraso(DateTime dataVencimento, DateTime? dataPagamento)
         {
-            int dias = (dataPagamento.Subtract(dataVencimento)).Days;
+            var datAtual = DateTime.Now;
+            if (dataPagamento != null)
+                datAtual =(DateTime)dataPagamento;
+
+            int dias = (datAtual.Subtract(dataVencimento)).Days;
 
             if (dias < 0)
                 dias = 0;

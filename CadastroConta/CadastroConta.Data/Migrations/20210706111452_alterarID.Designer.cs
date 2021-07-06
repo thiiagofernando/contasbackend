@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CadastroConta.Data.Migrations
 {
     [DbContext(typeof(ContasDbContext))]
-    [Migration("20210705160429_PagamentoRealizado")]
-    partial class PagamentoRealizado
+    [Migration("20210706111452_alterarID")]
+    partial class alterarID
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,11 +23,12 @@ namespace CadastroConta.Data.Migrations
 
             modelBuilder.Entity("CadastroConta.Business.Models.Conta", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("DataPagamento")
+                    b.Property<DateTime?>("DataPagamento")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DataVencimento")
@@ -56,9 +57,10 @@ namespace CadastroConta.Data.Migrations
 
             modelBuilder.Entity("CadastroConta.Business.Models.Usuario", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Login")
                         .IsRequired()

@@ -6,7 +6,9 @@ namespace CadastroConta.Data.Context
 {
     public class ContasDbContext : DbContext
     {
-        public ContasDbContext(DbContextOptions options) : base(options) { }
+        public ContasDbContext(DbContextOptions options) : base(options) 
+        {
+        }
 
         public DbSet<Conta> conta { get; set; }
         public DbSet<Usuario> usuario { get; set; }

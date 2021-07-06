@@ -30,6 +30,9 @@ namespace CadastroConta.Api.Controllers
                 {
                     return NotFound(conta);
                 }
+                if (conta.PagamentoRealizado == 1 && conta.DataPagamento == null)
+                    conta.DataPagamento = DateTime.Now;
+
                 int diasAtraso = _repository.CalcularDiasEmAtraso(conta.DataVencimento, conta.DataPagamento);
                 decimal valorCorrigido = _repository.CalcularMultaEJuros(diasAtraso, conta.ValorOriginal);
                 var novaconta = new Conta
@@ -40,7 +43,7 @@ namespace CadastroConta.Api.Controllers
                     ValorCorrigido = valorCorrigido,
                     DataPagamento = conta.DataPagamento,
                     DataVencimento = conta.DataVencimento,
-                    PagamentoRealizado = false
+                    PagamentoRealizado = conta.PagamentoRealizado == 1 ? true : false
                 };
                 _repository.Adicionar(novaconta);
                 return Ok(novaconta);
@@ -61,13 +64,15 @@ namespace CadastroConta.Api.Controllers
                 var lista = _repository.ListarTodasAsContas()
                                        .Select(p => new ContaResponseViewModel
                                        {
+                                           Id = p.Id,
                                            Nome = p.Nome,
                                            ValorOriginal = p.ValorOriginal.ToString("N2"),
                                            ValorCorrigido = p.ValorCorrigido.ToString("N2"),
                                            DiasEmAtraso = p.DiasEmAtraso,
-                                           DataPagamento = p.DataPagamento.ToString("dd/MM/yyyy HH:mm:ss"),
+                                           DataPagamento = p.DataPagamento?.ToString("dd/MM/yyyy"),
+                                           DataVencimento = p.DataVencimento.ToString("dd/MM/yyyy"),
                                            PagamentoRealizado = p.PagamentoRealizado == true ? "Sim" : "Não"
-                                       });
+                                       }).OrderBy(x => x.Id);
                 return Ok(lista);
             }
             catch (Exception)
@@ -78,12 +83,12 @@ namespace CadastroConta.Api.Controllers
         [HttpGet]
         [Route("ObterContaCadastrada/{id}")]
         [Authorize]
-        public IActionResult ObterContaCadastrada(Guid id)
+        public IActionResult ObterContaCadastrada(int id)
         {
             try
             {
-                var conta = _repository.ObterPorId(id);
-                return Ok(conta);
+                var cont = _repository.ObterPorId(id);
+                return Ok(cont);
             }
             catch (Exception)
             {
@@ -101,18 +106,21 @@ namespace CadastroConta.Api.Controllers
                 {
                     return NotFound(conta);
                 }
+                if (conta.PagamentoRealizado == 1 && conta.DataPagamento == null)
+                    conta.DataPagamento = DateTime.Now;
+
                 int diasAtraso = _repository.CalcularDiasEmAtraso(conta.DataVencimento, conta.DataPagamento);
                 decimal valorCorrigido = _repository.CalcularMultaEJuros(diasAtraso, conta.ValorOriginal);
                 var atualizarConta = new Conta
                 {
-                    Id = (Guid)conta.Id,
+                    Id = conta.Id,
                     Nome = conta.Nome,
                     DiasEmAtraso = diasAtraso,
                     ValorOriginal = conta.ValorOriginal,
                     ValorCorrigido = valorCorrigido,
                     DataPagamento = conta.DataPagamento,
                     DataVencimento = conta.DataVencimento,
-                    PagamentoRealizado = conta.PagamentoRealizado == 1 ? true : false
+                    PagamentoRealizado = conta.PagamentoRealizado == 1 ? true :false
                 };
                 _repository.Atualizar(atualizarConta);
                 return Ok(atualizarConta);
@@ -126,7 +134,7 @@ namespace CadastroConta.Api.Controllers
         [HttpDelete]
         [Route("ExcluirContaCadastrada/{id}")]
         [Authorize]
-        public IActionResult ExcluirConta(Guid id)
+        public IActionResult ExcluirConta(int id)
         {
             try
             {

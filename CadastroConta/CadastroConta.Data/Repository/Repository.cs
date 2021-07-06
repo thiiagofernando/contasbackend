@@ -18,41 +18,38 @@ namespace CadastroConta.Data.Repository
             DbSet = context.Set<TEntity>();
         }
 
-        public virtual async Task Adicionar(TEntity entity)
+        public void Adicionar(TEntity entity)
         {
             DbSet.Add(entity);
-            await SaveChanges();
+            Db.SaveChanges();
         }
 
-        public virtual async Task Atualizar(TEntity entity)
+        public void Atualizar(TEntity entity)
         {
             Db.Entry(entity).State = EntityState.Modified;
-            await SaveChanges();
+            Db.SaveChanges();
         }
 
-        public virtual async Task Excluir(Guid id)
+        public void Excluir(int Id)
         {
-            var entity = DbSet.Find(id);
+            var entity = DbSet.Find(Id);
             DbSet.Remove(entity);
-            await SaveChanges();
+            Db.SaveChanges();
         }
-        public async Task<TEntity> ObterPorId(Guid id)
-        {
-           return await DbSet.FindAsync(id);
-        }
+
         public virtual async Task<List<TEntity>> ObterTodos()
         {
             return await DbSet.ToListAsync();
         }
 
-        public async Task<int> SaveChanges()
-        {
-            return await Db.SaveChangesAsync();
-        }
-
         public void Dispose()
         {
             Db.Dispose();
+        }
+
+        public TEntity ObterPorId(int id)
+        {
+            return DbSet.Find(id);
         }
     }
 }

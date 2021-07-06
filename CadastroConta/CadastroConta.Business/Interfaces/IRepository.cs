@@ -7,11 +7,10 @@ namespace CadastroConta.Business.Interfaces
 {
     public interface IRepository<TEntity> : IDisposable where TEntity : Entity
     {
-        Task Adicionar(TEntity entity);
-        Task Atualizar(TEntity entity);
-        Task Excluir(Guid id);
-        Task<TEntity> ObterPorId(Guid id);
+        void Adicionar(TEntity entity);
+        void Atualizar(TEntity entity);
+        void Excluir(int Id);
+        TEntity ObterPorId(int id);
         Task<List<TEntity>> ObterTodos();
-        Task<int> SaveChanges();
     }
 }

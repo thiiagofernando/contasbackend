@@ -25,7 +25,7 @@ namespace CadastroConta.Data.Mappings
 
             builder.Property(p => p.DataVencimento).IsRequired();
 
-            builder.Property(p => p.DataPagamento).IsRequired();
+            builder.Property(p => p.DataPagamento);
             builder.ToTable("Conta");
         }
     }

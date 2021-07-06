@@ -25,7 +25,7 @@ namespace CadastroConta.Api.Controllers
         [HttpPost]
         [Route("Login")]
         [AllowAnonymous]
-        public ActionResult<dynamic> Autenticar([FromBody] UsuarioLoginViewModel usuario)
+        public IActionResult Autenticar([FromBody] UsuarioLoginViewModel usuario)
         {
             try
             {
@@ -36,16 +36,7 @@ namespace CadastroConta.Api.Controllers
                     return NotFound(new { message = "Usuário ou senha inválidos" });
 
                 var token = GerarToken(user);
-                return Ok(new
-                {
-                    user = user.Login,
-                    nameUser = user.NomeCompleto,
-                    authenticated = true,
-                    created = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                    expiration = DateTime.Now.AddHours(1).ToString("yyyy-MM-dd HH:mm:ss"),
-                    token = token,
-                    message = "OK"
-                });
+                return Ok(token);
             }
             catch (Exception)
             {
@@ -65,7 +56,7 @@ namespace CadastroConta.Api.Controllers
             try
             {
                 var existeLogin = _repository.ObterUsuarioPorLogin(usuario.Login);
-                if(existeLogin != null)
+                if (existeLogin != null)
                     return BadRequest(new { message = "Não foi possível criar o usuário informe um login diferente" });
 
                 var novaoUsuario = new Usuario
@@ -75,7 +66,6 @@ namespace CadastroConta.Api.Controllers
                     Senha = PasswordService.GeneratePassword(usuario.Senha)
                 };
                 _repository.GravarNovoUsuario(novaoUsuario);
-                _repository.SaveChanges();
                 return usuario;
             }
             catch (Exception)
@@ -84,7 +74,7 @@ namespace CadastroConta.Api.Controllers
             }
         }
 
-        private static string GerarToken(Usuario usuario)
+        private static ReturnTokenViewModel GerarToken(Usuario usuario)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             DateTime dataCriacao = DateTime.Now;
@@ -104,8 +94,17 @@ namespace CadastroConta.Api.Controllers
 
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
-
+            var usuarioToken = new ReturnTokenViewModel
+            {
+                User = usuario.Login,
+                NameUser = usuario.NomeCompleto,
+                Authenticated = true,
+                Created = dataCriacao.ToString("yyyy-MM-dd HH:mm:ss"),
+                Expiration = dataExpiracao.ToString("yyyy-MM-dd HH:mm:ss"),
+                Token = tokenHandler.WriteToken(token),
+                Message = "OK"
+            };
+            return usuarioToken;
         }
     }
 }

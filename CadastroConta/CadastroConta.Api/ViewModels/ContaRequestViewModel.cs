@@ -5,7 +5,7 @@ namespace CadastroConta.Api.ViewModels
 {
     public class ContaRequestViewModel
     {
-        public Guid? Id { get; set; }
+        public int Id { get; set; }
         [Required(ErrorMessage = "Este campo Nome é Obrigatório")]
         [MaxLength(100, ErrorMessage = "Este campo deve conter entre 3 e 100 caracteres")]
         [MinLength(3, ErrorMessage = "Este campo deve conter entre 3 e 100 caracteres")]
@@ -17,8 +17,8 @@ namespace CadastroConta.Api.ViewModels
         [Required(ErrorMessage = "Este campo Data de Vencimento é Obrigatório")]
         public DateTime DataVencimento { get; set; }
 
+        public DateTime? DataPagamento { get; set; }
         [Required(ErrorMessage = "Este campo Data de Pagamento é Obrigatório")]
-        public DateTime DataPagamento { get; set; }
         public int PagamentoRealizado { get; set; }
     }
 }

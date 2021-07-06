@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CadastroConta.Data.Migrations
 {
-    public partial class CriarTabelas : Migration
+    public partial class alterarID : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,13 +11,15 @@ namespace CadastroConta.Data.Migrations
                 name: "Conta",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Nome = table.Column<string>(type: "varchar(100)", nullable: false),
                     DiasEmAtraso = table.Column<int>(nullable: false),
                     ValorOriginal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ValorCorrigido = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     DataVencimento = table.Column<DateTime>(nullable: false),
-                    DataPagamento = table.Column<DateTime>(nullable: false)
+                    DataPagamento = table.Column<DateTime>(nullable: true),
+                    PagamentoRealizado = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -28,7 +30,8 @@ namespace CadastroConta.Data.Migrations
                 name: "Usuario",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Login = table.Column<string>(type: "varchar(100)", nullable: false),
                     NomeCompleto = table.Column<string>(type: "varchar(100)", nullable: false),
                     Senha = table.Column<string>(type: "varchar(100)", nullable: false)
