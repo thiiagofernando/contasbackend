@@ -4,10 +4,8 @@ using System.Collections.Generic;
 
 namespace CadastroConta.Business.Interfaces
 {
-    public interface IContaRepository : IRepository<Conta>
+    public interface IContaRepository : IRepository<ContaModel>
     {
-        int CalcularDiasEmAtraso(DateTime dataVencimento, DateTime? dataPagamento);
-        decimal CalcularMultaEJuros(int diasEmAtraso, decimal valorOriginal);
-        IEnumerable<Conta> ListarTodasAsContas();
+        IEnumerable<ContaModel> ListarTodasAsContas(int usuarioId);
     }
 }

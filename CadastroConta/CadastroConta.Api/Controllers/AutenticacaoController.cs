@@ -25,12 +25,12 @@ namespace CadastroConta.Api.Controllers
         [HttpPost]
         [Route("Login")]
         [AllowAnonymous]
-        public IActionResult Autenticar([FromBody] UsuarioLoginViewModel usuario)
+        public IActionResult Autenticar([FromBody] UsuarioLoginDto usuario)
         {
             try
             {
                 string hash = PasswordService.GeneratePassword(usuario.Senha);
-                Usuario user = _repository.ObterUsuarioPorLoginESenha(username: usuario.Login, senha: hash);
+                UsuarioModel user = _repository.ObterUsuarioPorLoginESenha(username: usuario.Login, senha: hash);
 
                 if (user == null)
                     return NotFound(new { message = "Usuário ou senha inválidos" });
@@ -47,7 +47,7 @@ namespace CadastroConta.Api.Controllers
         [HttpPost]
         [Route("CriarNovoUsuario")]
         [AllowAnonymous]
-        public ActionResult<UsuarioViewModel> CriarNovoUsuario([FromBody] UsuarioViewModel usuario)
+        public ActionResult<UsuarioDto> CriarNovoUsuario([FromBody] UsuarioDto usuario)
         {
             if (!ModelState.IsValid)
             {
@@ -59,7 +59,7 @@ namespace CadastroConta.Api.Controllers
                 if (existeLogin != null)
                     return BadRequest(new { message = "Não foi possível criar o usuário informe um login diferente" });
 
-                var novaoUsuario = new Usuario
+                var novaoUsuario = new UsuarioModel
                 {
                     Login = usuario.Login,
                     NomeCompleto = usuario.NomeCompleto,
@@ -74,7 +74,7 @@ namespace CadastroConta.Api.Controllers
             }
         }
 
-        private static ReturnTokenViewModel GerarToken(Usuario usuario)
+        private static ReturnTokenDto GerarToken(UsuarioModel usuarioModel)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             DateTime dataCriacao = DateTime.Now;
@@ -84,7 +84,7 @@ namespace CadastroConta.Api.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, usuario.Login.ToString()),
+                    new Claim(ClaimTypes.Name, usuarioModel.Login.ToString()),
                 }),
                 NotBefore = dataCriacao,
                 Audience = "ApiContas",
@@ -94,10 +94,10 @@ namespace CadastroConta.Api.Controllers
 
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            var usuarioToken = new ReturnTokenViewModel
+            var usuarioToken = new ReturnTokenDto
             {
-                User = usuario.Login,
-                NameUser = usuario.NomeCompleto,
+                User = usuarioModel.Login,
+                NameUser = usuarioModel.NomeCompleto,
                 Authenticated = true,
                 Created = dataCriacao.ToString("yyyy-MM-dd HH:mm:ss"),
                 Expiration = dataExpiracao.ToString("yyyy-MM-dd HH:mm:ss"),

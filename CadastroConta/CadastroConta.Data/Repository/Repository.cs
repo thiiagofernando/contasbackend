@@ -10,46 +10,46 @@ namespace CadastroConta.Data.Repository
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity, new()
     {
-        protected readonly ContasDbContext Db;
-        protected readonly DbSet<TEntity> DbSet;
+        protected readonly ContasDbContext _db;
+        protected readonly DbSet<TEntity> _dbSet;
         public Repository(ContasDbContext context)
         {
-            Db = context;
-            DbSet = context.Set<TEntity>();
+            _db = context;
+            _dbSet = context.Set<TEntity>();
         }
 
         public void Adicionar(TEntity entity)
         {
-            DbSet.Add(entity);
-            Db.SaveChanges();
+            _dbSet.Add(entity);
+            _db.SaveChanges();
         }
 
         public void Atualizar(TEntity entity)
         {
-            Db.Entry(entity).State = EntityState.Modified;
-            Db.SaveChanges();
+            _db.Entry(entity).State = EntityState.Modified;
+            _db.SaveChanges();
         }
 
-        public void Excluir(int Id)
+        public void Excluir(int id)
         {
-            var entity = DbSet.Find(Id);
-            DbSet.Remove(entity);
-            Db.SaveChanges();
+            var entity = _dbSet.Find(id);
+            _dbSet.Remove(entity);
+            _db.SaveChanges();
         }
 
         public virtual async Task<List<TEntity>> ObterTodos()
         {
-            return await DbSet.ToListAsync();
+            return await _dbSet.ToListAsync();
         }
 
         public void Dispose()
         {
-            Db.Dispose();
+            _db.Dispose();
         }
 
         public TEntity ObterPorId(int id)
         {
-            return DbSet.Find(id);
+            return _dbSet.Find(id);
         }
     }
 }

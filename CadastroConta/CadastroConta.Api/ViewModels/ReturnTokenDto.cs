@@ -1,6 +1,6 @@
 ﻿namespace CadastroConta.Api.ViewModels
 {
-    public class ReturnTokenViewModel
+    public class ReturnTokenDto
     {
         public string User { get; set; }
         public string NameUser { get; set; }

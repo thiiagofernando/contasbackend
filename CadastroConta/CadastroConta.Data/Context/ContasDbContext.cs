@@ -10,8 +10,9 @@ namespace CadastroConta.Data.Context
         {
         }
 
-        public DbSet<Conta> conta { get; set; }
-        public DbSet<Usuario> usuario { get; set; }
+        public DbSet<ContaModel> conta { get; set; }
+        public DbSet<UsuarioModel> usuario { get; set; }
+        public DbSet<EstabelecimentoModel> estabelecimento { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             foreach (var property in modelBuilder.Model.GetEntityTypes()
@@ -23,6 +24,9 @@ namespace CadastroConta.Data.Context
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ContasDbContext).Assembly);
 
+            //impedir delete cascade no banco
+            foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys())) relationship.DeleteBehavior = DeleteBehavior.ClientSetNull;
+           
             base.OnModelCreating(modelBuilder);
         }
     }

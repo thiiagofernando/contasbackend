@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CadastroConta.Business.Services;
 
 namespace CadastroConta.Api.Controllers
 {
@@ -14,15 +15,19 @@ namespace CadastroConta.Api.Controllers
     public class ContaController : ControllerBase
     {
         private readonly IContaRepository _repository;
-        public ContaController(IContaRepository repository)
+        private readonly IUsuarioRepository _usuarioRepository;
+        private readonly AuthenticatedUser _user;
+        public ContaController(IContaRepository repository,AuthenticatedUser user,IUsuarioRepository usuarioRepository)
         {
             _repository = repository;
+            _usuarioRepository = usuarioRepository;
+            _user = user;
         }
 
         [HttpPost]
-        [Route("CadastrarNovaConta")]
+        [Route("cadastrar")]
         [Authorize]
-        public ActionResult CadastrarNovaConta([FromBody] ContaRequestViewModel conta)
+        public ActionResult CadastrarNovaConta([FromBody] ContaDto conta)
         {
             try
             {
@@ -30,20 +35,17 @@ namespace CadastroConta.Api.Controllers
                 {
                     return NotFound(conta);
                 }
-                if (conta.PagamentoRealizado == 1 && conta.DataPagamento == null)
+                if (conta.PagamentoRealizado == true && conta.DataPagamento == null)
                     conta.DataPagamento = DateTime.Now;
-
-                int diasAtraso = _repository.CalcularDiasEmAtraso(conta.DataVencimento, conta.DataPagamento);
-                decimal valorCorrigido = _repository.CalcularMultaEJuros(diasAtraso, conta.ValorOriginal);
-                var novaconta = new Conta
+                
+                var novaconta = new ContaModel
                 {
-                    Nome = conta.Nome,
-                    DiasEmAtraso = diasAtraso,
-                    ValorOriginal = conta.ValorOriginal,
-                    ValorCorrigido = valorCorrigido,
+                    Descricao = conta.Descricao,
+                    Valor = conta.Valor,
                     DataPagamento = conta.DataPagamento,
-                    DataVencimento = conta.DataVencimento,
-                    PagamentoRealizado = conta.PagamentoRealizado == 1 ? true : false
+                    EstabelecimentoId = conta.EstabelecimentoId,
+                    UsuarioId = conta.UsuarioId,
+                    PagamentoRealizado = conta.PagamentoRealizado
                 };
                 _repository.Adicionar(novaconta);
                 return Ok(novaconta);
@@ -55,23 +57,27 @@ namespace CadastroConta.Api.Controllers
         }
 
         [HttpGet]
-        [Route("ListarContasCadastradas")]
+        [Route("listartodos")]
         [Authorize]
-        public ActionResult<List<ContaResponseViewModel>> ListarContasCadastradas()
+        public ActionResult<List<ContaDto>> ListarContasCadastradas()
         {
             try
             {
-                var lista = _repository.ListarTodasAsContas()
-                                       .Select(p => new ContaResponseViewModel
+                var logado = _usuarioRepository.ObterUsuarioPorLogin(_user.UsuarioLogado.Name);
+                if (logado == null)
+                    return BadRequest(new { message = "Não foi possível obter  a lista de contas" });
+                
+                var lista = _repository.ListarTodasAsContas(logado.Id)
+                                       .Select(p => new ContaDto
                                        {
                                            Id = p.Id,
-                                           Nome = p.Nome,
-                                           ValorOriginal = p.ValorOriginal.ToString("N2"),
-                                           ValorCorrigido = p.ValorCorrigido.ToString("N2"),
-                                           DiasEmAtraso = p.DiasEmAtraso,
-                                           DataPagamento = p.DataPagamento?.ToString("dd/MM/yyyy"),
-                                           DataVencimento = p.DataVencimento.ToString("dd/MM/yyyy"),
-                                           PagamentoRealizado = p.PagamentoRealizado == true ? "Sim" : "Não"
+                                           Descricao = p.Descricao,
+                                           Valor = p.Valor,
+                                           EstabelecimentoId = p.EstabelecimentoId,
+                                           UsuarioId = p.UsuarioId,
+                                           DescricaoEstabelecimento = p.Estabelecimento?.Descricao,
+                                           DataPagamento = p.DataPagamento,
+                                           PagamentoRealizado = p.PagamentoRealizado
                                        }).OrderBy(x => x.Id);
                 return Ok(lista);
             }
@@ -81,7 +87,7 @@ namespace CadastroConta.Api.Controllers
             }
         }
         [HttpGet]
-        [Route("ObterContaCadastrada/{id}")]
+        [Route("obterporcodigo/{id}")]
         [Authorize]
         public IActionResult ObterContaCadastrada(int id)
         {
@@ -96,9 +102,9 @@ namespace CadastroConta.Api.Controllers
             }
         }
         [HttpPut]
-        [Route("AtualizarContaCadastrada")]
+        [Route("atualizar")]
         [Authorize]
-        public IActionResult AtualizarConta([FromBody] ContaRequestViewModel conta)
+        public IActionResult AtualizarConta([FromBody] ContaDto conta)
         {
             try
             {
@@ -106,21 +112,18 @@ namespace CadastroConta.Api.Controllers
                 {
                     return NotFound(conta);
                 }
-                if (conta.PagamentoRealizado == 1 && conta.DataPagamento == null)
+                if (conta.PagamentoRealizado == true && conta.DataPagamento == null)
                     conta.DataPagamento = DateTime.Now;
-
-                int diasAtraso = _repository.CalcularDiasEmAtraso(conta.DataVencimento, conta.DataPagamento);
-                decimal valorCorrigido = _repository.CalcularMultaEJuros(diasAtraso, conta.ValorOriginal);
-                var atualizarConta = new Conta
+                
+                var atualizarConta = new ContaModel
                 {
                     Id = conta.Id,
-                    Nome = conta.Nome,
-                    DiasEmAtraso = diasAtraso,
-                    ValorOriginal = conta.ValorOriginal,
-                    ValorCorrigido = valorCorrigido,
+                    Descricao = conta.Descricao,
+                    Valor = conta.Valor,
                     DataPagamento = conta.DataPagamento,
-                    DataVencimento = conta.DataVencimento,
-                    PagamentoRealizado = conta.PagamentoRealizado == 1 ? true :false
+                    EstabelecimentoId = conta.EstabelecimentoId,
+                    UsuarioId = conta.UsuarioId,
+                    PagamentoRealizado = conta.PagamentoRealizado 
                 };
                 _repository.Atualizar(atualizarConta);
                 return Ok(atualizarConta);
@@ -132,7 +135,7 @@ namespace CadastroConta.Api.Controllers
         }
 
         [HttpDelete]
-        [Route("ExcluirContaCadastrada/{id}")]
+        [Route("excluir/{id}")]
         [Authorize]
         public IActionResult ExcluirConta(int id)
         {

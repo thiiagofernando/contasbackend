@@ -2,7 +2,7 @@
 
 namespace CadastroConta.Api.ViewModels
 {
-    public class UsuarioLoginViewModel
+    public class UsuarioLoginDto
     {
         [Required(ErrorMessage = "Este campo é Obrigatório")]
         [MaxLength(100, ErrorMessage = "Este campo deve conter entre 3 e 100 caracteres")]

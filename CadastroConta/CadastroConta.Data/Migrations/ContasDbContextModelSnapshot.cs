@@ -3,8 +3,8 @@ using System;
 using CadastroConta.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CadastroConta.Data.Migrations
 {
@@ -15,50 +15,72 @@ namespace CadastroConta.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
                 .HasAnnotation("ProductVersion", "3.1.16")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("CadastroConta.Business.Models.Conta", b =>
+            modelBuilder.Entity("CadastroConta.Business.Models.ContaModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<DateTime?>("DataPagamento")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp without time zone");
 
-                    b.Property<DateTime>("DataVencimento")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("DiasEmAtraso")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Nome")
+                    b.Property<string>("Descricao")
                         .IsRequired()
                         .HasColumnType("varchar(100)");
 
+                    b.Property<int>("EstabelecimentoId")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("PagamentoRealizado")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
-                    b.Property<decimal>("ValorCorrigido")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("integer");
 
-                    b.Property<decimal>("ValorOriginal")
+                    b.Property<decimal>("Valor")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EstabelecimentoId");
+
+                    b.HasIndex("UsuarioId");
+
                     b.ToTable("Conta");
                 });
 
-            modelBuilder.Entity("CadastroConta.Business.Models.Usuario", b =>
+            modelBuilder.Entity("CadastroConta.Business.Models.EstabelecimentoModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Estabelecimento");
+                });
+
+            modelBuilder.Entity("CadastroConta.Business.Models.UsuarioModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("Login")
                         .IsRequired()
@@ -75,6 +97,27 @@ namespace CadastroConta.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Usuario");
+                });
+
+            modelBuilder.Entity("CadastroConta.Business.Models.ContaModel", b =>
+                {
+                    b.HasOne("CadastroConta.Business.Models.EstabelecimentoModel", "Estabelecimento")
+                        .WithMany()
+                        .HasForeignKey("EstabelecimentoId")
+                        .IsRequired();
+
+                    b.HasOne("CadastroConta.Business.Models.UsuarioModel", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CadastroConta.Business.Models.EstabelecimentoModel", b =>
+                {
+                    b.HasOne("CadastroConta.Business.Models.UsuarioModel", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

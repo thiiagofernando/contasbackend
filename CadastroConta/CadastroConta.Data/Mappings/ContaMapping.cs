@@ -4,27 +4,17 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CadastroConta.Data.Mappings
 {
-    public class ContaMapping : IEntityTypeConfiguration<Conta>
+    public class ContaMapping : IEntityTypeConfiguration<ContaModel>
     {
-        public void Configure(EntityTypeBuilder<Conta> builder)
+        public void Configure(EntityTypeBuilder<ContaModel> builder)
         {
             builder.HasKey(p => p.Id);
 
-            builder.Property(p => p.Nome).IsRequired();
+            builder.Property(p => p.Descricao).IsRequired();
             builder.Property(p => p.PagamentoRealizado).IsRequired();
-
-            builder.Property(p => p.DiasEmAtraso).IsRequired();
-
-            builder.Property(p => p.ValorOriginal)
+            builder.Property(p => p.Valor)
                    .IsRequired()
                    .HasColumnType("decimal(18,2)");
-
-            builder.Property(p => p.ValorCorrigido)
-                   .IsRequired()
-                   .HasColumnType("decimal(18,2)");
-
-            builder.Property(p => p.DataVencimento).IsRequired();
-
             builder.Property(p => p.DataPagamento);
             builder.ToTable("Conta");
         }

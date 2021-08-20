@@ -6,26 +6,26 @@ using System.Linq;
 
 namespace CadastroConta.Data.Repository
 {
-    public class UsuarioRepository : Repository<Usuario>, IUsuarioRepository
+    public class UsuarioRepository : Repository<UsuarioModel>, IUsuarioRepository
     {
         public UsuarioRepository(ContasDbContext context) : base(context) { }
 
-        public Usuario GravarNovoUsuario(Usuario usuario)
+        public UsuarioModel GravarNovoUsuario(UsuarioModel usuarioModel)
         {
-            Db.usuario.Add(usuario);
-            var user = Db.usuario.Find(usuario.Id);
-            Db.SaveChanges();
+            _db.usuario.Add(usuarioModel);
+            var user = _db.usuario.Find(usuarioModel.Id);
+            _db.SaveChanges();
             return user;
         }
 
-        public Usuario ObterUsuarioPorLogin(string login)
+        public UsuarioModel ObterUsuarioPorLogin(string login)
         {
-            return Db.usuario.AsNoTracking().FirstOrDefault(p => p.Login == login);
+            return _db.usuario.AsNoTracking().FirstOrDefault(p => p.Login == login);
         }
 
-        public Usuario ObterUsuarioPorLoginESenha(string username, string senha)
+        public UsuarioModel ObterUsuarioPorLoginESenha(string username, string senha)
         {
-            return Db.usuario
+            return _db.usuario
                .AsNoTracking()
                .FirstOrDefault(p => p.Login == username && p.Senha == senha);
         }

@@ -44,15 +44,14 @@ namespace CadastroConta.Api
              );
             services.AddDbContext<ContasDbContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
             });
-            //-> Documentação da API
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Serviço de integração",
+                    Title = "ServiÃ§o de integraÃ§Ã£o",
                     Description = "API de Contas a Pagar",
                     TermsOfService = new Uri("http://contas.com.br"),
                     Contact = new OpenApiContact
@@ -65,8 +64,8 @@ namespace CadastroConta.Api
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    Description = @"Cabeçalho de autorização JWT usando o esquema Bearer.
-                      Digite 'Bearer' [espaço] e, em seguida, seu token na entrada Ex:
+                    Description = @"Cabeï¿½alho de autorizaÃ§Ã£o JWT usando o esquema Bearer.
+                      Digite 'Bearer' [espaÃ§o] e, em seguida, seu token na entrada Ex:
                        'Bearer 12345abcdef' ",
                     Name = "Authorization",
                     In = ParameterLocation.Header,

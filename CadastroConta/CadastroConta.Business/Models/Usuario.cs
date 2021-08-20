@@ -1,6 +1,6 @@
 ﻿namespace CadastroConta.Business.Models
 {
-    public class Usuario : Entity
+    public class UsuarioModel : Entity
     {
         public string Login { get; set; }
         public string NomeCompleto { get; set; }

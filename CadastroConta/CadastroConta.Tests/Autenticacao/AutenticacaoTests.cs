@@ -19,7 +19,7 @@ namespace CadastroConta.Tests.Autenticacao
         [Trait("Autenticacao", "Autenticacao")]
         public async void GerarTokenValidoParaAutenticacao()
         {
-            var login = new UsuarioLoginViewModel()
+            var login = new UsuarioLoginDto()
             {
                 Login = "teste",
                 Senha = "12345678"
@@ -33,7 +33,7 @@ namespace CadastroConta.Tests.Autenticacao
         [Trait("Autenticacao", "Autenticacao")]
         public async void GerarTokenInalidoParaAutenticacao()
         {
-            var login = new UsuarioLoginViewModel()
+            var login = new UsuarioLoginDto()
             {
                 Login = "teste2",
                 Senha = "12345678"
@@ -45,7 +45,7 @@ namespace CadastroConta.Tests.Autenticacao
         [Trait("Autenticacao", "Autenticacao")]
         public async void CriarNovaContaDeUsuarioValido()
         {
-            var login = new UsuarioViewModel()
+            var login = new UsuarioDto()
             {
                 Login = "teste3",
                 NomeCompleto = "Teste 3",
@@ -60,7 +60,7 @@ namespace CadastroConta.Tests.Autenticacao
         [Trait("Autenticacao", "Autenticacao")]
         public async void CriarNovaContaDeUsuarioInvalido()
         {
-            var login = new UsuarioViewModel()
+            var login = new UsuarioDto()
             {
                 Login = "teste3",
                 Senha = null

@@ -2,10 +2,10 @@
 
 namespace CadastroConta.Business.Interfaces
 {
-    public interface IUsuarioRepository : IRepository<Usuario>
+    public interface IUsuarioRepository : IRepository<UsuarioModel>
     {
-        Usuario ObterUsuarioPorLoginESenha(string username, string senha);
-        Usuario GravarNovoUsuario(Usuario usuario);
-        Usuario ObterUsuarioPorLogin(string login);
+        UsuarioModel ObterUsuarioPorLoginESenha(string username, string senha);
+        UsuarioModel GravarNovoUsuario(UsuarioModel usuarioModel);
+        UsuarioModel ObterUsuarioPorLogin(string login);
     }
 }

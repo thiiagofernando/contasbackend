@@ -34,7 +34,7 @@ namespace CadastroConta.Tests.Config
 
         public async void Autenticar()
         {
-            var login = new UsuarioLoginViewModel()
+            var login = new UsuarioLoginDto()
             {
                 Login = "teste",
                 Senha = "12345678"
@@ -50,7 +50,7 @@ namespace CadastroConta.Tests.Config
 
         private void CriaUsuarioApi()
         {
-            var login = new Usuario()
+            var login = new UsuarioModel()
             {
                 Login = "teste",
                 NomeCompleto = "Teste",
@@ -62,17 +62,14 @@ namespace CadastroConta.Tests.Config
         }
         private void CriarConta()
         {
-            var novaSemAtrasoConta = new Business.Models.Conta()
+            var novaSemAtrasoConta = new Business.Models.ContaModel()
             {
-                Nome = "Cartão Credito",
-                ValorOriginal = 1300,
-                ValorCorrigido = 1300,
-                DiasEmAtraso = 0,
-                DataVencimento = DateTime.Now,
+                Descricao = "Cartão Credito",
+                Valor = 1300,
                 DataPagamento = DateTime.Now,
             };
-            Context.conta.Add(novaSemAtrasoConta);
-            Context.SaveChanges();
+            //Context.conta.Add(novaSemAtrasoConta);
+            // Context.SaveChanges();
         }
 
     }
